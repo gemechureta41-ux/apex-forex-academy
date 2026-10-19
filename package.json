@@ -1,7 +1,7 @@
 {
   "name": "apex-forex-backend",
   "version": "1.0.0",
-  "description": "Backend Node.js Express API & Telegram Bot for Apex Forex Academy",
+  "description": "Backend API and Telegram Verification Bot for Apex Forex Academy",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
