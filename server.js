@@ -9,7 +9,7 @@ app.use(express.json());
 
 // Telegram Bot Credentials
 const BOT_TOKEN = process.env.BOT_TOKEN || '8736595383:AAF33rpE_kS9ikG7n_AF2lLyv9zAVs7Bkrg';
-const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID;
+const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || '6741214107';
 
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 
@@ -17,9 +17,9 @@ const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 const pendingUsers = new Map();
 const verifiedCodes = new Map();
 
-console.log('🚀 Apex Forex Telegram Bot Server Starting...');
+console.log('🚀 Apex Forex Bot Server for Admin (6741214107) Running...');
 
-// Telegram Bot Workflow
+// /start Command
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   bot.sendMessage(
@@ -34,12 +34,12 @@ bot.on('message', (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
 
-  if (text === '/start') return;
+  if (!text || text === '/start') return;
 
   const userState = pendingUsers.get(chatId);
 
   if (userState && userState.step === 'AWAITING_EMAIL') {
-    if (!text || !text.includes('@')) {
+    if (!text.includes('@')) {
       return bot.sendMessage(chatId, '❌ Maaloo Email sirrii ta’e ergi!');
     }
 
@@ -55,7 +55,7 @@ bot.on('message', (msg) => {
       }
     };
 
-    bot.sendMessage(chatId, `✅ Email: *\${userState.email}* galmeeffameera.\n\nMaaloo karaa kaffaltii filadhu:`, { parse_mode: 'Markdown', ...opts });
+    bot.sendMessage(chatId, `✅ Email: *${userState.email}* galmeeffameera.\n\nMaaloo karaa kaffaltii filadhu:`, { parse_mode: 'Markdown', ...opts });
   }
 });
 
@@ -88,16 +88,19 @@ bot.on('photo', (msg) => {
   const userState = pendingUsers.get(chatId);
 
   if (userState && userState.step === 'AWAITING_RECEIPT') {
+    // Generate 6-Digit OTP Code
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     verifiedCodes.set(code, { email: userState.email, verified: false });
 
+    // Send Photo & Details to Admin (Chat ID: 6741214107)
     if (ADMIN_CHAT_ID) {
       bot.sendPhoto(ADMIN_CHAT_ID, msg.photo[msg.photo.length - 1].file_id, {
-        caption: `🚨 **KAFFALTII HAARAA!**\n\n• Email: ${userState.email}\n• Method: ${userState.method}\n• Verification Code: \`${code}\``,
+        caption: `🚨 **KAFFALTII HAARAA KA'E!**\n\n• **Email Barataa:** ${userState.email}\n• **Karaa Kaffaltii:** ${userState.method}\n• **Verification Code Uumame:** \`\${code}\`\n• **User Telegram ID:** ${chatId}`,
         parse_mode: 'Markdown'
       });
     }
 
+    // Response to User
     bot.sendMessage(
       chatId,
       `🎉 **Kaffaltiin kee galmaa'ee jira!**\n\nKoodiin Mirkaneessa (Verification Code) kee:\n👉 \`\${code}\`\n\nKoodii kana websiitii irratti galchuun VIP Access banadhu!`,
@@ -106,12 +109,12 @@ bot.on('photo', (msg) => {
   }
 });
 
-// REST API for Website Verification
+// REST API endpoint for Website verification
 app.post('/api/verify-code', (req, res) => {
   const { code } = req.body;
 
   if (!code) {
-    return res.status(400).json({ success: false, message: 'Code required!' });
+    return res.status(400).json({ success: false, message: 'Koodiin barbaachisaadha!' });
   }
 
   const record = verifiedCodes.get(code.trim());
@@ -125,7 +128,7 @@ app.post('/api/verify-code', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.send('Apex Forex Backend Server is active and running!');
+  res.send('Apex Forex Backend Server is active!');
 });
 
 const PORT = process.env.PORT || 3000;
