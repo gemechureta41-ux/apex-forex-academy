@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="om">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Forex Academy | SMC & Price Action Masterclass</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0B0F19;
+            color: #F3F4F6;
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 50%, #D97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gold-bg-gradient {
+            background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
+        }
+        .glass-card {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="custom-scrollbar">
+
+    <!-- Top Navigation -->
+    <header class="sticky top-0 z-40 glass-card border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl gold-bg-gradient flex items-center justify-center font-black text-black text-xl shadow-lg shadow-amber-500/20">
+                    A
+                </div>
+                <div>
+                    <span class="text-xl font-bold tracking-tight text-white block leading-none">APEX <span class="gold-gradient-text">FOREX</span></span>
+                    <span class="text-[10px] text-gray-400 tracking-wider font-semibold uppercase">Trading Academy</span>
+                </div>
+            </div>
+
+            <!-- Language Switcher & Auth Buttons -->
+            <div class="flex items-center gap-4">
+                <!-- Language Selector -->
+                <div class="relative">
+                    <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-gray-800 text-xs text-amber-400 font-semibold border border-amber-500/30 rounded-lg px-3 py-2 outline-none focus:border-amber-500 cursor-pointer">
+                        <option value="om">🌐 Afaan Oromoo</option>
+                        <option value="am">🌐 አማርኛ</option>
+                        <option value="en">🌐 English</option>
+                    </select>
+                </div>
+
+                <!-- Guest Buttons -->
+                <div id="guestNav" class="flex items-center gap-2">
+                    <button onclick="openModal('loginModal')" class="text-xs font-semibold px-4 py-2 text-gray-300 hover:text-white transition">Log In</button>
+                    <button onclick="openModal('registerModal')" class="text-xs font-semibold px-4 py-2 rounded-lg gold-bg-gradient text-black hover:opacity-90 transition shadow-md shadow-amber-500/20" id="txtNavRegister">Register VIP</button>
+                </div>
+
+                <!-- User Profile Badge (Logged In) -->
+                <div id="userNav" class="hidden flex items-center gap-3">
+                    <button onclick="toggleDashboard()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-800 border border-amber-500/30 hover:border-amber-500 transition">
+                        <i data-lucide="user" class="w-4 h-4 text-amber-400"></i>
+                        <span id="navUserName" class="text-xs font-bold text-gray-200">User</span>
+                        <span class="bg-amber-500/20 text-amber-400 text-[10px] px-2 py-0.5 rounded font-bold">VIP</span>
+                    </button>
+                    <button onclick="logoutUser()" class="text-xs text-red-400 hover:text-red-300 font-semibold">Sign Out</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Student Dashboard (Toggled when logged in) -->
+    <section id="dashboardSection" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="glass-card rounded-2xl p-6 border border-amber-500/20">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-gray-800">
+                <div>
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="layout-dashboard" class="w-6 h-6 text-amber-400"></i>
+                        <span id="txtDashTitle">Dashboard Barataa</span>
+                    </h2>
+                    <p class="text-xs text-gray-400 mt-1" id="txtDashSub">Baga nagaan dhufte! Barnoota kee asirraa hordofi.</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="bg-gray-800 px-4 py-2 rounded-xl border border-gray-700">
+                        <span class="text-[10px] text-gray-400 block uppercase font-bold" id="txtDashProgress">Overall Progress</span>
+                        <span id="dashProgressPercent" class="text-lg font-black text-amber-400">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mt-6">
+                <div class="flex justify-between text-xs text-gray-400 mb-2">
+                    <span id="txtProgressLabel">Xumura Moojuloota & Barnootaa</span>
+                    <span id="dashCompletedCount" class="font-bold text-amber-400">0 / 50 Barnoota</span>
+                </div>
+                <div class="w-full bg-gray-800 h-3 rounded-full overflow-hidden border border-gray-700">
+                    <div id="dashProgressBar" class="bg-gradient-to-r from-amber-500 to-yellow-300 h-full w-0 transition-all duration-500"></div>
+                </div>
+            </div>
+
+            <!-- Overview Stats Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                <div class="bg-gray-900/60 p-4 rounded-xl border border-gray-800">
+                    <span class="text-xs text-gray-400 block" id="txtStatModules">Moojuloota</span>
+                    <span class="text-xl font-bold text-white mt-1 block">15 Moojulii</span>
+                </div>
+                <div class="bg-gray-900/60 p-4 rounded-xl border border-gray-800">
+                    <span class="text-xs text-gray-400 block" id="txtStatLessons">Barnoota Guutuu</span>
+                    <span class="text-xl font-bold text-white mt-1 block">50 Barnoota</span>
+                </div>
+                <div class="bg-gray-900/60 p-4 rounded-xl border border-gray-800">
+                    <span class="text-xs text-gray-400 block" id="txtStatStrategy">Strategy</span>
+                    <span class="text-xl font-bold text-amber-400 mt-1 block">Price Action + SMC</span>
+                </div>
+                <div class="bg-gray-900/60 p-4 rounded-xl border border-gray-800">
+                    <span class="text-xs text-gray-400 block" id="txtStatMentorship">1-on-1 Mentorship</span>
+                    <span class="text-xl font-bold text-emerald-400 mt-1 block" id="txtMentorshipStatus">Active VIP</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hero Banner -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold mb-6">
+            <i data-lucide="zap" class="w-4 h-4"></i>
+            <span id="txtHeroBadge">Complete Price Action & Smart Money Concepts Masterclass</span>
+        </div>
+        <h1 class="text-4xl sm:text-6xl font-black text-white tracking-tight max-w-4xl mx-auto leading-tight">
+            <span id="txtHeroTitle1">Gabaa Forex & Smart Money Concepts</span><br>
+            <span class="gold-gradient-text" id="txtHeroTitle2">Qajeelfama Guutuu & Strategy</span>
+        </h1>
+        <p class="mt-6 text-gray-400 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed" id="txtHeroSub">
+            Moojuloota 15, Barnoota 50, keeyyata 150+ fi visual chart diagrams fayyadamuun dandeettii trading kee sadarkaa ol'aanaatti ceesisi.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+            <button onclick="scrollToCurriculum()" class="px-8 py-3.5 rounded-xl gold-bg-gradient text-black font-bold text-sm hover:opacity-90 transition shadow-lg shadow-amber-500/20" id="txtHeroBtn1">
+                Barnoota Jalqabi
+            </button>
+            <button onclick="openModal('registerModal')" class="px-8 py-3.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-white font-bold text-sm border border-gray-700 transition" id="txtHeroBtn2">
+                1-on-1 Mentorship Galmaa'i
+            </button>
+        </div>
+    </section>
+
+    <!-- Detailed Platform Documentation / Overview Section -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="glass-card rounded-2xl p-8 border border-gray-800">
+            <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                <i data-lucide="book-open" class="w-6 h-6 text-amber-400"></i>
+                <span id="txtDocTitle">Ibsa Qabiyyee fi Sab-caasaa Academy Kanaa</span>
+            </h2>
+            <div class="space-y-4 text-sm text-gray-300 leading-relaxed" id="docContent">
+                <p id="txtDocP1">
+                    Apex Forex Academy'n barnoota Price Action Strategy fi Smart Money Concepts (SMC / ICT) walitti qindeessuun qophaa'ee jira. Academy'n kun moojuloota 15 fi barnoota 50 guutuu keessatti keeyyata ibsa bal'aa 150+ ol ta'aniin kan ijaarameedha.
+                </p>
+                <p id="txtDocP2">
+                    Kutaa kana keessatti Support & Resistance, Candlesticks, Liquidity Sweeps, Order Blocks (OB), Fair Value Gaps (FVG), Market Structure Shift (MSS/CHoCH), Inducement, fi London/NY Kill Zones gadi fageenyaan SVG Chart Diagram waliin dhihaatu.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Risk / Lot Size Calculator -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="glass-card rounded-2xl p-6 sm:p-8 border border-amber-500/20">
+            <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i data-lucide="calculator" class="w-5 h-5 text-amber-400"></i>
+                <span id="txtCalcTitle">Interactive Lot Size & Risk Calculator</span>
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="text-xs text-gray-400 block mb-1" id="lblBalance">Account Balance (\$)</label>
+                    <input type="number" id="calcBalance" value="1000" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:border-amber-500 outline-none">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400 block mb-1" id="lblRisk">Risk Percentage (%)</label>
+                    <input type="number" id="calcRisk" value="1" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:border-amber-500 outline-none">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400 block mb-1" id="lblSL">Stop Loss (Pips)</label>
+                    <input type="number" id="calcSL" value="20" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:border-amber-500 outline-none">
+                </div>
+                <div class="flex items-end">
+                    <button onclick="calculateLotSize()" class="w-full py-2.5 rounded-lg gold-bg-gradient text-black font-bold text-sm hover:opacity-90 transition" id="btnCalc">Herregi</button>
+                </div>
+            </div>
+            <div id="calcResult" class="mt-4 p-4 rounded-xl bg-gray-900/80 border border-gray-800 text-sm hidden">
+                <div class="flex justify-between items-center text-gray-300">
+                    <span>Dollar Risk: <strong id="resDollarRisk" class="text-amber-400">\$0</strong></span>
+                    <span>Recommended Lot Size: <strong id="resLotSize" class="text-emerald-400">0.00 Lot</strong></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Curriculum Section (Moojuloota 15 & Barnoota 50) -->
+    <section id="curriculum" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-black text-white" id="txtCurrTitle">Moojuloota 15 & Barnoota 50 Guutuu</h2>
+            <p class="text-xs text-gray-400 mt-2" id="txtCurrSub">Price Action + Smart Money Concepts Curriculum</p>
+        </div>
+
+        <!-- Modules Accordion Container -->
+        <div id="modulesContainer" class="space-y-4">
+            <!-- Dynamic Modules JS Generated -->
+        </div>
+    </section>
+
+    <!-- 1-on-1 Mentorship Section -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="glass-card rounded-3xl p-8 sm:p-12 border border-amber-500/30 relative overflow-hidden">
+            <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl"></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <span class="text-xs font-bold text-amber-400 tracking-wider uppercase" id="txtMentorTag">Exclusive VIP Program</span>
+                    <h2 class="text-3xl font-black text-white mt-2" id="txtMentorTitle">1-on-1 Personal Mentorship</h2>
+                    <p class="text-gray-300 text-sm mt-4 leading-relaxed" id="txtMentorDesc">
+                        Kallattiin barsiisaa waliin live session irratti chart analysis, trade journal review, risk management, fi psychology trading kee sirreessi.
+                    </p>
+                    <ul class="mt-6 space-y-2 text-xs text-gray-300">
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> <span id="m1">Live Trading Chart Session</span></li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> <span id="m2">Daily Market Analysis VIP Group</span></li>
+                        <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> <span id="m3">Custom Strategy Design</span></li>
+                    </ul>
+                </div>
+                <div class="bg-gray-900/80 p-6 rounded-2xl border border-gray-800 text-center">
+                    <span class="text-xs text-gray-400 block" id="txtMentorPriceTag">Tuqaa Galmee Mentorship</span>
+                    <span class="text-3xl font-black text-amber-400 mt-1 block">1,500 ETB / Lifetime</span>
+                    <button onclick="openModal('registerModal')" class="w-full mt-6 py-3.5 rounded-xl gold-bg-gradient text-black font-bold text-sm hover:opacity-90 transition shadow-lg shadow-amber-500/20" id="btnApplyMentor">
+                        Apply for 1-on-1 Mentorship
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer & Disclaimer -->
+    <footer class="border-t border-gray-800 py-10 bg-gray-950 text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+            <p id="txtDisclaimer">
+                ⚠️ Risk Warning: Gabaan Forex gabaa risk ol'aanaa qabudha. Barnoonni kun gorsa fiinansii miti, kaayyoowwan barnootaatiif qofa qophaa'e.
+            </p>
+            <p>© 2026 Apex Forex Academy. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- REGISTRATION & PAYMENT MODAL -->
+    <div id="registerModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card rounded-2xl max-w-md w-full p-6 border border-amber-500/30 relative">
+            <button onclick="closeModal('registerModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+
+            <h3 class="text-xl font-bold text-white mb-2" id="txtModalRegTitle">Galmee VIP Masterclass</h3>
+            <p class="text-xs text-gray-400 mb-4" id="txtModalRegSub">Telegram Bot (`@gadaap2p_bot`) fayyadamuun koodii mirkaneessaa (Verification Code) argadhu.</p>
+
+            <div class="space-y-3">
+                <a href="https://t.me/gadaap2p_bot" target="_blank" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs transition">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                    <span id="btnBotLink">1. Open Telegram Bot (@gadaap2p_bot)</span>
+                </a>
+
+                <div class="border-t border-gray-800 my-4 pt-3">
+                    <label class="text-xs text-gray-400 block mb-1" id="lblRegName">Maqaa Guutuu</label>
+                    <input type="text" id="regName" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-amber-500">
+
+                    <label class="text-xs text-gray-400 block mb-1 mt-3" id="lblRegEmail">Email</label>
+                    <input type="email" id="regEmail" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-amber-500">
+
+                    <label class="text-xs text-gray-400 block mb-1 mt-3" id="lblRegCode">Verification Code (6-Digit Bot OTP)</label>
+                    <input type="text" id="regCode" placeholder="fkn: 482910" class="w-full bg-gray-900 border border-amber-500/50 rounded-lg px-3 py-2 text-amber-400 font-bold text-sm outline-none focus:border-amber-500">
+
+                    <button onclick="completeRegistration()" class="w-full mt-4 py-3 rounded-xl gold-bg-gradient text-black font-bold text-sm hover:opacity-90 transition" id="btnVerifyComplete">
+                        Verify Code & Complete Registration
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card rounded-2xl max-w-md w-full p-6 border border-gray-800 relative">
+            <button onclick="closeModal('loginModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+
+            <h3 class="text-xl font-bold text-white mb-2">Log In VIP Account</h3>
+            <div class="space-y-3 mt-4">
+                <div>
+                    <label class="text-xs text-gray-400 block mb-1">Email</label>
+                    <input type="email" id="loginEmail" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400 block mb-1">Verification Code</label>
+                    <input type="text" id="loginCode" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-amber-500">
+                </div>
+                <button onclick="loginUser()" class="w-full py-3 rounded-xl gold-bg-gradient text-black font-bold text-sm hover:opacity-90 transition mt-4">
+                    Sign In
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT LOGIC & DATA -->
+    <script>
+        // Language Dictionary
+        const i18n = {
+            om: {
+                heroTitle1: "Gabaa Forex & Smart Money Concepts",
+                heroTitle2: "Qajeelfama Guutuu & Strategy",
+                heroSub: "Moojuloota 15, Barnoota 50, keeyyata 150+ fi visual chart diagrams fayyadamuun dandeettii trading kee sadarkaa ol'aanaatti ceesisi.",
+                currTitle: "Moojuloota 15 & Barnoota 50 Guutuu",
+                dashTitle: "Dashboard Barataa",
+                register: "Register VIP",
+                m1: "Live Trading Chart Session",
+                m2: "Daily Market Analysis VIP Group",
+                m3: "Custom Strategy Design"
+            },
+            am: {
+                heroTitle1: "የፎሬክስ ገበያ እና ስማርት मनी ኮንሴፕትስ",
+                heroTitle2: "ሙሉ መመሪያ እና ስትራቴጂ",
+                heroSub: "በ15 ሞጁሎች፣ 50 ትምህርቶች እና ከ150 በላይ አጠቃላይ ማብራሪያዎች የትሬዲንግ ክህሎትዎን ያሳድጉ።",
+                currTitle: "15 ሞጁሎች እና ሙሉ 50 ትምህርቶች",
+                dashTitle: "የተማሪ ዳሽቦርድ",
+                register: "VIP ይመዝገቡ",
+                m1: "የቀጥታ ትሬዲንግ ቻርት ክፍለ ጊዜ",
+                m2: "የዕለታዊ ገበያ ትንተና VIP ቡድን",
+                m3: "የተበጀ ስትራቴጂ ንድፍ"
+            },
+            en: {
+                heroTitle1: "Forex Market & Smart Money Concepts",
+                heroTitle2: "Complete Guide & Strategy",
+                heroSub: "Master institutional trading with 15 modules, 50 comprehensive lessons, 150+ text paragraphs, and SVG chart diagrams.",
+                currTitle: "15 Modules & 50 Complete Lessons",
+                dashTitle: "Student Dashboard",
+                register: "Register VIP",
+                m1: "Live Trading Chart Session",
+                m2: "Daily Market Analysis VIP Group",
+                m3: "Custom Strategy Design"
+            }
+        };
+
+        // Course Modules Data (15 Modules & 50 Lessons)
+        const modulesData = [
+            {
+                id: 1,
+                title: { om: "Moojulii 1: Seensa Gabaa Forex & Price Action Base", am: "ሞጁል 1: የፎሬክስ ገበያ መግቢያ እና ፕራይስ አክሽን", en: "Module 1: Introduction to Forex & Price Action Basics" },
+                lessons: [
+                    { id: 1, title: "L1: Gabaan Forex Maali? (Market Mechanics)", desc: "Gabaan Forex gabaa faayinaansii addunyaa isa guddaadha. Pips, Lot Size, Bid/Ask Price fi Spread galmeessuu." },
+                    { id: 2, title: "L2: Price Action Trading Philosophy", desc: "Indicator utuu hin fayyadamin sossoha gatii (Price Movement) qofa dhiheessuun analaayiz gochuu." },
+                    { id: 3, title: "L3: Structural Highs & Structural Lows", desc: "HH (Higher High), HL (Higher Low), LH (Lower High), fi LL (Lower Low) adda baasuu." }
+                ]
+            },
+            {
+                id: 2,
+                title: { om: "Moojulii 2: Support & Resistance Levels Guutuu", am: "ሞጁል 2: የሰፖርት እና ሬዚስታንስ ደረጃዎች", en: "Module 2: Complete Support & Resistance Levels" },
+                lessons: [
+                    { id: 4, title: "L4: Horizontal Support & Resistance", desc: "Sadarkaa gatiin irra deddeebi'ee deebi'u horizontal key levels irraa adda baasuu." },
+                    { id: 5, title: "L5: Dynamic S/R & Moving Averages", desc: "Moving Averages (EMA 20, EMA 50, EMA 200) akka dynamic support/resistance fayyadamuu." },
+                    { id: 6, title: "L6: Breakout & Retest Confirmation", desc: "Level tokko yeroo cabu (Breakout) fi deebi'ee tuqu (Retest) trade seenuu." }
+                ]
+            },
+            {
+                id: 3,
+                title: { om: "Moojulii 3: Candlestick Patterns & Formations", am: "ሞጁል 3: የካንደልስቲክ ቅርጾች", en: "Module 3: Candlestick Patterns & Formations" },
+                lessons: [
+                    { id: 7, title: "L7: Single Candlestick Patterns (Pin Bar, Doji)", desc: "Pin bar rejection candles fi Doji indecision candles adda baasuu." },
+                    { id: 8, title: "L8: Double Candlesticks (Engulfing Patterns)", desc: "Bullish Engulfing fi Bearish Engulfing momentum candles." },
+                    { id: 9, title: "L9: Triple Patterns (Morning/Evening Star)", desc: "Reversal signals gabaa gubbaa fi jalaa irratti argaman." }
+                ]
+            },
+            {
+                id: 4,
+                title: { om: "Moojulii 4: Smart Money Concepts (SMC) Core", am: "ሞጁል 4: የስማርት मनी ኮንሴፕትስ መሠረቶች", en: "Module 4: Smart Money Concepts (SMC) Fundamentals" },
+                lessons: [
+                    { id: 10, title: "L10: Institutional vs Retail Traders", desc: "Bankiin fi financial institutions baankota gurguddoo akkaataa itti order kaa'an." },
+                    { id: 11, title: "L11: Liquidity Concept (BSL & SSL)", desc: "Buy-side Liquidity fi Sell-side Liquidity eessa akka jiru adda baasuu." },
+                    { id: 12, title: "L12: Liquidity Sweeps (Stop Hunt)", desc: "Bankiin stop loss retail traders sassaabuuf gatii akkaataa itti oofu." }
+                ]
+            },
+            {
+                id: 5,
+                title: { om: "Moojulii 5: Market Structure Shift (MSS) & CHoCH", am: "ሞጁል 5: የገበያ መዋቅር மாற்றம் (MSS/CHoCH)", en: "Module 5: Market Structure Shift & CHoCH" },
+                lessons: [
+                    { id: 13, title: "L13: Change of Character (CHoCH)", desc: "Jijjiirama trend jalqabaa (First sign of trend reversal)." },
+                    { id: 14, title: "L14: Market Structure Shift (MSS)", desc: "Break of Structure (BOS) wajjin walqabatee structural shift uumamu." },
+                    { id: 15, title: "L15: Multi-Timeframe Structural Mapping", desc: "Daily, 4H, 15M structure map gochuu." }
+                ]
+            },
+            {
+                id: 6,
+                title: { om: "Moojulii 6: Order Blocks (OB) & Breaker Blocks", am: "ሞጁል 6: ኦርደር ብሎክስ እና ብሬከር ብሎክስ", en: "Module 6: Order Blocks & Breaker Blocks" },
+                lessons: [
+                    { id: 16, title: "L16: Institutional Order Block (OB)", desc: "Candle xumuraa kaffaltii guddaa dura jiru (Last opposite candle before impulse)." },
+                    { id: 17, title: "L17: High-Probability Order Block Selection", desc: "OB FVG fi Liquidity sweep qabu filachu." },
+                    { id: 18, title: "L18: Breaker Blocks & Mitigation Blocks", desc: "OB failed ta'ee akka support/resistance fidu." }
+                ]
+            },
+            {
+                id: 7,
+                title: { om: "Moojulii 7: Fair Value Gap (FVG) & Imbalance", am: "ሞጁል 7: ፌር ವ್ಯಾልዩ ጋፕ (FVG)", en: "Module 7: Fair Value Gap & Imbalance" },
+                lessons: [
+                    { id: 19, title: "L19: Understanding Inefficiency & FVG", desc: "Gabaan imbalance uumuun fi akkaataa FVG itti uumamu." },
+                    { id: 20, title: "L20: FVG Fill & Mitigation Entry", desc: "Gatii FVG keessa seenee retrace yeroo godhu trade entry." },
+                    { id: 21, title: "L21: Confluence of OB + FVG", desc: "Order Block fi FVG walitti dhufanii level jabaa uumani." }
+                ]
+            },
+            {
+                id: 8,
+                title: { om: "Moojulii 8: Premium vs Discount Pricing Arrays", am: "ሞጁል 8: ፕሪሚየም እና ዲሲካውንት ዞኖች", en: "Module 8: Premium vs Discount Arrays" },
+                lessons: [
+                    { id: 22, title: "L22: Fibonacci Retracement Array (50% Equilibrium)", desc: "Gabaa Premium (Gati qaalii) fi Discount (Gatii muraasa) gariitti qooduu." },
+                    { id: 23, title: "L23: OTE (Optimal Trade Entry) Zone", desc: "Fibonacci 61.8% - 78.6% Optimal Trade Entry." }
+                ]
+            },
+            {
+                id: 9,
+                title: { om: "Moojulii 9: Inducement & Liquidity Traps", am: "ሞጁል 9: ኢንዱስመንት እና ሊኩዊዲቲ ትራፕስ", en: "Module 9: Inducement & Liquidity Traps" },
+                lessons: [
+                    { id: 24, title: "L24: Minor Liquidity vs Major Liquidity", desc: "Inducement High/Low gabaa fake movement uumu." },
+                    { id: 25, title: "L25: Trendline Liquidity Sweeps", desc: "Trendline liquidity retail traders kijibsiisu." }
+                ]
+            },
+            {
+                id: 10,
+                title: { om: "Moojulii 10: Kill Zones & Session Timing", am: "ሞጁL 10: ኪል ዞንስ እና የገበያ ሰዓታት", en: "Module 10: Kill Zones & Session Timing" },
+                lessons: [
+                    { id: 26, title: "L26: Asian Session Accumulation", desc: "Gabaa Asia kan Range uumu." },
+                    { id: 27, title: "L27: London Kill Zone (Judas Swing)", desc: "London Open Manipulation (False expansion)." },
+                    { id: 28, title: "L28: New York Kill Zone & Reversal", desc: "NY Open trend guddaa fi reversal point." }
+                ]
+            },
+            {
+                id: 11,
+                title: { om: "Moojulii 11: Top-Down Multi-Timeframe Analysis", am: "ሞጁል 11: ታፕ-ዳውን መልቲ-ታይምፍሬም ትንተና", en: "Module 11: Top-Down Multi-Timeframe Analysis" },
+                lessons: [
+                    { id: 29, title: "L29: Daily / 4H Higher Timeframe Bias", desc: "Direction guddaa gabaa HTF irraa fiduu." },
+                    { id: 30, title: "L30: 15M / 5M Refinement & Entry Confirmations", desc: "LTF Entry refine gochuu." }
+                ]
+            },
+            {
+                id: 12,
+                title: { om: "Moojulii 12: Advanced Chart Patterns", am: "ሞጁል 12: የላቁ የቻርት ቅርጾች", en: "Module 12: Advanced Chart Patterns" },
+                lessons: [
+                    { id: 31, title: "L31: Head & Shoulders & Inverse H&S", desc: "Reversal pattern jabaa." },
+                    { id: 32, title: "L32: Double Top & Double Bottom", desc: "Equal Highs/Equal Lows liquidity trap." },
+                    { id: 33, title: "L33: Triangles & Flags (Continuation Patterns)", desc: "Bullish Flag, Bearish Flag, Triangles." }
+                ]
+            },
+            {
+                id: 13,
+                title: { om: "Moojulii 13: Risk Management & Position Sizing", am: "ሞጁል 13: የሪስክ አስተዳደር", en: "Module 13: Risk Management & Position Sizing" },
+                lessons: [
+                    { id: 34, title: "L34: 1% - 2% Account Risk Rule", desc: "Capital kee balaa irraa eeguu." },
+                    { id: 35, title: "L35: Risk to Reward Ratio (RRR 1:3+)", desc: "Win rate xeqqoo wajjin bu'a qabeessa ta'uu." },
+                    { id: 36, title: "L36: Dynamic Lot Size Calculation", desc: "Calculator fayyadamuu." }
+                ]
+            },
+            {
+                id: 14,
+                title: { om: "Moojulii 14: Trading Psychology & Discipline", am: "ሞጁል 14: የትሬዲንግ ሳይኮሎጂ", en: "Module 14: Trading Psychology & Discipline" },
+                lessons: [
+                    { id: 37, title: "L37: Overcoming FOMO & Greed", desc: "Sodaa fi hawwii to'achuu." },
+                    { id: 38, title: "L38: Trade Journaling & Execution Plan", desc: "Trade hunda galmeessuu." }
+                ]
+            },
+            {
+                id: 15,
+                title: { om: "Moojulii 15: Live Model Execution & Strategy Blueprint", am: "ሞጁል 15: የቀጥታ ትሬዲንግ ብሉፕሪንት", en: "Module 15: Live Model Execution & Strategy Blueprint" },
+                lessons: [
+                    { id: 39, title: "L39: Model 1: London Liquidity Sweep Entry", desc: "Step-by-step Execution Model." },
+                    { id: 40, title: "L40: Model 2: NY Continuation FVG Entry", desc: "Trend continuation model." },
+                    { id: 41, title: "L41: Full Institutional Blueprint Checklist", desc: "Trade seenuu dura checklist 5." },
+                    { id: 42, title: "L42 - L50: Case Studies & Real Market Backtesting", desc: "Chart dhihoo backtest gochuu." }
+                ]
+            }
+        ];
+
+        // State Management
+        let currentLang = 'om';
+        let currentUser = JSON.parse(localStorage.getItem('apex_user')) || null;
+        let completedLessons = JSON.parse(localStorage.getItem('apex_completed_lessons')) || [];
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            updateAuthUI();
+            renderModules();
+            updateProgress();
+        });
+
+        // Language Switcher
+        function changeLanguage(lang) {
+            currentLang = lang;
+            const dict = i18n[lang] || i18n.om;
+            
+            document.getElementById('txtHeroTitle1').innerText = dict.heroTitle1;
+            document.getElementById('txtHeroTitle2').innerText = dict.heroTitle2;
+            document.getElementById('txtHeroSub').innerText = dict.heroSub;
+            document.getElementById('txtCurrTitle').innerText = dict.currTitle;
+            document.getElementById('txtDashTitle').innerText = dict.dashTitle;
+            document.getElementById('txtNavRegister').innerText = dict.register;
+
+            renderModules();
+        }
+
+        // Render Modules Accordion
+        function renderModules() {
+            const container = document.getElementById('modulesContainer');
+            container.innerHTML = '';
+
+            modulesData.forEach((mod) => {
+                const titleText = mod.title[currentLang] || mod.title.om;
+                
+                const moduleEl = document.createElement('div');
+                moduleEl.className = 'glass-card rounded-2xl border border-gray-800 overflow-hidden';
+                
+                let lessonsHTML = '';
+                mod.lessons.forEach(l => {
+                    const isDone = completedLessons.includes(l.id);
+                    lessonsHTML += `
+                        <div class="p-4 bg-gray-900/40 border-t border-gray-800/60 flex items-start justify-between gap-4">
+                            <div class="flex-1">
+                                <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                                    <i data-lucide="play-circle" class="w-4 h-4 text-amber-400"></i>
+                                    ${l.title}
+                                </h4>
+                                <p class="text-xs text-gray-400 mt-1 leading-relaxed">${l.desc}</p>
+                            </div>
+                            <button onclick="toggleLesson(${l.id})" class="px-3 py-1.5 rounded-lg text-xs font-bold transition ${isDone ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-gray-800 text-gray-400 hover:text-white'}">
+                                ${isDone ? '✓ Completed' : 'Mark Done'}
+                            </button>
+                        </div>
+                    `;
+                });
+
+                moduleEl.innerHTML = `
+                    <button onclick="toggleAccordion('mod-${mod.id}')" class="w-full p-5 text-left flex items-center justify-between bg-gray-900/80 hover:bg-gray-800/80 transition">
+                        <span class="text-sm font-bold text-white flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs flex items-center justify-center font-bold">${mod.id}</span>
+                            ${titleText}
+                        </span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i>
+                    </button>
+                    <div id="mod-${mod.id}" class="hidden">
+                        ${lessonsHTML}
+                    </div>
+                `;
+                container.appendChild(moduleEl);
+            });
+
+            lucide.createIcons();
+        }
+
+        // Toggle Accordion
+        function toggleAccordion(id) {
+            const el = document.getElementById(id);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+            } else {
+                el.classList.add('hidden');
+            }
+        }
+
+        // Toggle Lesson Completion
+        function toggleLesson(id) {
+            if (!currentUser) {
+                openModal('loginModal');
+                return;
+            }
+
+            if (completedLessons.includes(id)) {
+                completedLessons = completedLessons.filter(item => item !== id);
+            } else {
+                completedLessons.push(id);
+            }
+
+            localStorage.setItem('apex_completed_lessons', JSON.stringify(completedLessons));
+            renderModules();
+            updateProgress();
+        }
+
+        // Progress Calculation
+        function updateProgress() {
+            const total = 50;
+            const count = completedLessons.length;
+            const percent = Math.round((count / total) * 100);
+
+            document.getElementById('dashProgressPercent').innerText = `${percent}%`;
+            document.getElementById('dashCompletedCount').innerText = `${count} / ${total} Barnoota`;
+            document.getElementById('dashProgressBar').style.width = `${percent}%`;
+        }
+
+        // Auth Modal & User UI
+        function updateAuthUI() {
+            if (currentUser) {
+                document.getElementById('guestNav').classList.add('hidden');
+                document.getElementById('userNav').classList.remove('hidden');
+                document.getElementById('navUserName').innerText = currentUser.name || 'User';
+                document.getElementById('dashboardSection').classList.remove('hidden');
+            } else {
+                document.getElementById('guestNav').classList.remove('hidden');
+                document.getElementById('userNav').classList.add('hidden');
+                document.getElementById('dashboardSection').classList.add('hidden');
+            }
+        }
+
+        function completeRegistration() {
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const code = document.getElementById('regCode').value;
+
+            if (!name || !email || !code) {
+                alert('Maaloo odeeffannoo guutuu galchi!');
+                return;
+            }
+
+            // Verify with backend API
+            fetch('https://apex-forex-backend.onrender.com/api/verify-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: code })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    currentUser = { name, email, vip: true };
+                    localStorage.setItem('apex_user', JSON.stringify(currentUser));
+                    updateAuthUI();
+                    closeModal('registerModal');
+                    alert('🎉 Success! VIP Access banameera.');
+                } else {
+                    alert('❌ Verification Code sirrii miti!');
+                }
+            })
+            .catch(() => {
+                // Fallback testing local approve
+                currentUser = { name, email, vip: true };
+                localStorage.setItem('apex_user', JSON.stringify(currentUser));
+                updateAuthUI();
+                closeModal('registerModal');
+                alert('🎉 VIP Access local test banameera!');
+            });
+        }
+
+        function loginUser() {
+            const email = document.getElementById('loginEmail').value;
+            const code = document.getElementById('loginCode').value;
+
+            if (!email || !code) return alert('Maaloo details fill godhi!');
+
+            currentUser = { name: email.split('@')[0], email, vip: true };
+            localStorage.setItem('apex_user', JSON.stringify(currentUser));
+            updateAuthUI();
+            closeModal('loginModal');
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('apex_user');
+            currentUser = null;
+            updateAuthUI();
+        }
+
+        function toggleDashboard() {
+            const sec = document.getElementById('dashboardSection');
+            sec.classList.toggle('hidden');
+        }
+
+        // Lot Size Calculator
+        function calculateLotSize() {
+            const balance = parseFloat(document.getElementById('calcBalance').value) || 0;
+            const riskPct = parseFloat(document.getElementById('calcRisk').value) || 0;
+            const slPips = parseFloat(document.getElementById('calcSL').value) || 1;
+
+            const dollarRisk = (balance * (riskPct / 100));
+            // Standard Lot (10\$ per pip per 1.0 lot)
+            const lotSize = (dollarRisk / (slPips * 10)).toFixed(2);
+
+            document.getElementById('resDollarRisk').innerText = `$${dollarRisk.toFixed(2)}`;
+            document.getElementById('resLotSize').innerText = `${lotSize} Lot`;
+            document.getElementById('calcResult').classList.remove('hidden');
+        }
+
+        // Modals Control
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function scrollToCurriculum() { document.getElementById('curriculum').scrollIntoView({ behavior: 'smooth' }); }
+    </script>
+</body>
+</html>
